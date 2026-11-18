@@ -5,7 +5,7 @@
 | `street` | MOSE, `b0240233`: multiple vehicles crossing an urban road |
 | `bicycle` | DAVIS, `bike-packing`: a person lifting a bicycle in a detailed indoor scene |
 
-Each directory contains a source video and a synchronized binary target mask. White pixels identify the selected object. The README previews show the masked input on the left and the AI-generated H3Remover output on the right.
+Each directory contains a source video and a synchronized binary target mask. White pixels identify the selected object. The README previews use an animated cursor to switch from the masked input to the AI-generated H3Remover video on the same canvas.
 
 Both examples are real-world videos from public research datasets.
 
