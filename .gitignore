@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+weights/
+outputs/
+*.pt
+*.pth
+*.safetensors
+.env
+.DS_Store

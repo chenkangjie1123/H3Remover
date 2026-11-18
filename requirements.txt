@@ -1,0 +1,10 @@
+git+https://github.com/huggingface/diffusers.git@90b4e34e79a86ec5e7f2437634fe95ecd2108796
+transformers==5.15.0
+peft==0.20.0
+accelerate==1.14.0
+safetensors==0.8.0
+opencv-python==5.0.0.93
+numpy
+pillow
+sentencepiece
+huggingface_hub
