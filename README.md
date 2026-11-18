@@ -1,29 +1,51 @@
-<h1 align="center">🎬 H3Remover<br><sub>Reinforcing Video Object Removal without Paired Data</sub></h1>
+<div align="center">
 
-<p align="center">
-  <a href="https://chenkangjie1123.github.io/H3Remover/"><img src="https://img.shields.io/badge/🌐_Project-Homepage-2563EB?style=flat-square" alt="Project homepage"></a>
-  <a href="https://huggingface.co/chenkangjie1123/H3Remover"><img src="https://img.shields.io/badge/🤗_Hugging_Face-Model_Weights-FFD21E?style=flat-square" alt="Hugging Face model weights"></a>
-  <a href="https://github.com/chenkangjie1123/H3Remover/blob/main/docs/H3Remover.pdf"><img src="https://img.shields.io/badge/📄_Paper-PDF-B31B1B?style=flat-square" alt="Paper PDF"></a>
+<h2>🎬 H3Remover: Reinforcing Video Object Removal without Paired Data</h2>
+
+<p>
+  <a href="https://chenkangjie1123.github.io/H3Remover/"><img src="docs/assets/project-badge.svg" alt="Project Page" height="36"></a>
+  &nbsp;
+  <a href="https://github.com/chenkangjie1123/H3Remover/blob/main/docs/H3Remover.pdf"><img src="docs/assets/paper-badge.svg" alt="Paper" height="36"></a>
+  &nbsp;
+  <a href="https://huggingface.co/chenkangjie1123/H3Remover"><img src="docs/assets/weights-badge.svg" alt="Model Weights" height="36"></a>
 </p>
+<p>
+  <a href="#overview">Overview</a> &nbsp;·&nbsp;
+  <a href="#quickstart">Quickstart</a> &nbsp;·&nbsp;
+  <a href="examples/README.md">Examples</a> &nbsp;·&nbsp;
+  <a href="https://huggingface.co/chenkangjie1123/H3Remover">Weights</a> &nbsp;·&nbsp;
+  <a href="#license">License</a>
+</p>
+<p>
+  <img src="assets/street.gif" width="49%" alt="Street: selected vehicles removed">
+  <img src="assets/bicycle.gif" width="49%" alt="Bicycle: selected person and bicycle removed">
+</p>
+<p><sub>Masked input → generated result. Multi-vehicle street and person-with-bicycle examples.</sub></p>
 
-Remove mask-selected objects and their associated visual effects while preserving surrounding scene details.
+</div>
 
-<table>
-  <tr><th width="50%">🚗 Multi-vehicle street</th><th width="50%">🚲 Person and bicycle</th></tr>
-  <tr>
-    <td><img src="assets/street.gif" width="360" alt="Animated click: street input to removal result"></td>
-    <td><img src="assets/bicycle.gif" width="360" alt="Animated click: bicycle input to removal result"></td>
-  </tr>
-</table>
+## Overview
 
-<sub>Animated input → AI-generated output previews. <a href="examples/README.md">Example sources</a>.</sub>
+**Remove objects. Preserve the scene.** H3Remover uses reinforcement learning to remove mask-selected objects and their associated visual effects while preserving surrounding scene details, without paired training data.
 
-## ⚡ Quick start
+- **Mask-guided editing.** Select one or multiple objects with a video mask.
+- **Lightweight release.** A LoRA adapter and a minimal video inference pipeline.
+
+## Quickstart
+
+### 1. Install
 
 Use Linux, Python 3.13, FFmpeg, and a CUDA-capable PyTorch installation. The reference environment uses PyTorch 2.10.0 with CUDA 13. Install PyTorch for your system, then:
 
 ```bash
+git clone https://github.com/chenkangjie1123/H3Remover.git
+cd H3Remover
 pip install -r requirements.txt
+```
+
+### 2. Download weights
+
+```bash
 hf download chenkangjie1123/H3Remover --include '*.safetensors' '*.json' --local-dir weights/h3remover
 ```
 
@@ -36,7 +58,7 @@ hf download MiniMaxAI/MiniMax-H3 --revision 0919fb684102ef115126612f3fbb84d1027e
   --local-dir weights/MiniMax-H3
 ```
 
-## ▶️ Inference
+### 3. Remove objects
 
 ```bash
 python infer.py \
@@ -53,6 +75,6 @@ The pipeline processes the first 5.17 seconds as 124 frames at 24 FPS, with aspe
 
 Component CPU offloading and tiled VAE decoding are enabled to reduce GPU memory usage.
 
-## 📜 License
+## License
 
 The model is distributed under the [MiniMax H3 Community License](https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE). Download the base model separately from its official repository.
