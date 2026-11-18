@@ -7,9 +7,9 @@ Provide a source video and a matching binary mask. The inference pipeline builds
 
 **[Model weights](https://huggingface.co/chenkangjie1123/H3Remover)**
 
-| Multi-vehicle street scene | Bus removal through tree occlusion |
+| Multi-vehicle street scene | Person lifting a bicycle indoors |
 | --- | --- |
-| ![Masked street input and H3Remover output](assets/street.gif) | ![Masked bus input and H3Remover output](assets/bus.gif) |
+| ![Masked street input and H3Remover output](assets/street.gif) | ![Masked bicycle input and H3Remover output](assets/bicycle.gif) |
 
 Left: input with target mask. Right: AI-generated H3Remover output. [Example sources](examples/README.md).
 
