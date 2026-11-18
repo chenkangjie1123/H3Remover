@@ -27,7 +27,7 @@
 
 ## Overview
 
-**Remove objects. Preserve the scene.** H3Remover uses reinforcement learning to remove mask-selected objects and their associated visual effects while preserving surrounding scene details, without paired training data.
+**Remove objects. Preserve the scene.** H3Remover (H3 Remover) uses reinforcement learning for video object removal: removing mask-selected objects and their associated visual effects while preserving surrounding scene details, without paired training data.
 
 - 🎯 **Mask-guided editing.** Select one or multiple objects with a video mask.
 - 🪶 **Lightweight release.** A LoRA adapter and a minimal video inference pipeline.
