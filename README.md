@@ -1,7 +1,5 @@
 <h1 align="center">🎬 H3Remover<br><sub>Reinforcing Video Object Removal without Paired Data</sub></h1>
 
-<p align="center">Kangjie Chen, Xiangyu Li, Jinhao Deng, …, Boyang Wang</p>
-
 <p align="center">
   <a href="https://chenkangjie1123.github.io/H3Remover/"><img src="https://img.shields.io/badge/🌐_Project-Homepage-2563EB?style=flat-square" alt="Project homepage"></a>
   <a href="https://huggingface.co/chenkangjie1123/H3Remover"><img src="https://img.shields.io/badge/🤗_Hugging_Face-Model_Weights-FFD21E?style=flat-square" alt="Hugging Face model weights"></a>
