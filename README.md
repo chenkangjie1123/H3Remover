@@ -17,10 +17,9 @@
   <a href="#license">License</a>
 </p>
 <p>
-  <img src="assets/street.gif" width="49%" alt="Street: selected vehicles removed">
-  <img src="assets/bicycle.gif" width="49%" alt="Bicycle: selected person and bicycle removed">
+  <a href="https://chenkangjie1123.github.io/H3Remover/#demo"><img src="assets/showcase-100.gif" width="100%" alt="100 public-dataset examples: masked inputs transition to object-removal results"></a>
 </p>
-<p><sub>Masked input → generated result. Multi-vehicle street and person-with-bicycle examples.</sub></p>
+<p><sub>100 examples. Many scenes. Masked inputs → removal results. <a href="https://chenkangjie1123.github.io/H3Remover/#demo">Watch the full video ↗</a></sub></p>
 
 </div>
 
