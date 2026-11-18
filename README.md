@@ -1,23 +1,26 @@
-# H3Remover
+<h1 align="center">🎬 H3Remover<br><sub>Reinforcing Video Object Removal without Paired Data</sub></h1>
 
-Mask-guided video object removal with a lightweight LoRA for MiniMax H3 Ref2VA.
-H3Remover edits videos to remove mask-selected objects and associated visual effects, including shadows, reflections, and emitted light, while preserving surrounding scene details.
+<p align="center">Kangjie Chen, Xiangyu Li, Jinhao Deng, …, Boyang Wang</p>
 
-Provide a source video and a matching binary mask. The inference pipeline builds the visual references automatically and applies the H3Remover LoRA to MiniMax H3 Ref2VA.
+<p align="center">
+  <a href="https://chenkangjie1123.github.io/H3Remover/"><img src="https://img.shields.io/badge/🌐_Project-Homepage-2563EB?style=flat-square" alt="Project homepage"></a>
+  <a href="https://huggingface.co/chenkangjie1123/H3Remover"><img src="https://img.shields.io/badge/🤗_Hugging_Face-Model_Weights-FFD21E?style=flat-square" alt="Hugging Face model weights"></a>
+  <a href="https://github.com/chenkangjie1123/H3Remover/blob/main/docs/H3Remover.pdf"><img src="https://img.shields.io/badge/📄_Paper-PDF-B31B1B?style=flat-square" alt="Paper PDF"></a>
+</p>
 
-**[Model weights](https://huggingface.co/chenkangjie1123/H3Remover)**
+Remove mask-selected objects and their associated visual effects while preserving surrounding scene details.
 
-### Multi-vehicle street scene
+<table>
+  <tr><th width="50%">🚗 Multi-vehicle street</th><th width="50%">🚲 Person and bicycle</th></tr>
+  <tr>
+    <td><img src="assets/street.gif" width="360" alt="Animated click: street input to removal result"></td>
+    <td><img src="assets/bicycle.gif" width="360" alt="Animated click: bicycle input to removal result"></td>
+  </tr>
+</table>
 
-![Click animation: street input to H3Remover output](assets/street.gif)
+<sub>Animated input → AI-generated output previews. <a href="examples/README.md">Example sources</a>.</sub>
 
-### Person lifting a bicycle indoors
-
-![Click animation: bicycle input to H3Remover output](assets/bicycle.gif)
-
-Animated click previews: input with target masks → AI-generated H3Remover output. [Example sources](examples/README.md).
-
-## Install
+## ⚡ Quick start
 
 Use Linux, Python 3.13, FFmpeg, and a CUDA-capable PyTorch installation. The reference environment uses PyTorch 2.10.0 with CUDA 13. Install PyTorch for your system, then:
 
@@ -35,7 +38,7 @@ hf download MiniMaxAI/MiniMax-H3 --revision 0919fb684102ef115126612f3fbb84d1027e
   --local-dir weights/MiniMax-H3
 ```
 
-## Run
+## ▶️ Inference
 
 ```bash
 python infer.py \
@@ -52,8 +55,6 @@ The pipeline processes the first 5.17 seconds as 124 frames at 24 FPS, with aspe
 
 Component CPU offloading and tiled VAE decoding are enabled to reduce GPU memory usage.
 
-## License
+## 📜 License
 
 The model is distributed under the [MiniMax H3 Community License](https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE). Download the base model separately from its official repository.
-
-Powered by MiniMax H3.
