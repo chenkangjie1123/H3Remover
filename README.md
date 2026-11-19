@@ -76,6 +76,10 @@ The output is a silent **124-frame, 24 FPS, 960 × 544** MP4. Provide at least *
 
 ## 🏃‍♂️ Gradio Demo
 
+<p align="center"><img src="assets/gradio-walkthrough.gif" width="592" alt="Gradio walkthrough: load City traffic, preview the mask, run removal, then play the edited street video beside the selected targets."></p>
+
+**City traffic, end to end.** The red overlay shows what will be removed. The final frames show the result of this run; the wait for GPU inference is cut from the recording.
+
 After the [quickstart installation](#quickstart), launch the local editor:
 
 ```bash
