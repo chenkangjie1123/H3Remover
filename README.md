@@ -14,6 +14,7 @@
 <p>
   <a href="#overview">Overview</a> &nbsp;·&nbsp;
   <a href="#quickstart">Quickstart</a> &nbsp;·&nbsp;
+  <a href="#gradio-demo">Gradio Demo</a> &nbsp;·&nbsp;
   <a href="docs/inference.md">Inference Guide</a> &nbsp;·&nbsp;
   <a href="examples/README.md">Examples</a> &nbsp;·&nbsp;
   <a href="https://huggingface.co/chenkangjie1123/H3Remover">Weights</a> &nbsp;·&nbsp;
@@ -22,7 +23,7 @@
 <p>
   <a href="https://chenkangjie1123.github.io/H3Remover/#demo"><img src="assets/showcase-100.gif" width="100%" alt="100 public-dataset examples: masked inputs transition to object-removal results"></a>
 </p>
-<p><sub>100 examples across diverse scenes. Masked inputs → removal results. <a href="https://chenkangjie1123.github.io/H3Remover/#demo">Watch the full video ↗</a></sub></p>
+<p><sub>100 examples across diverse scenes. Masked inputs → removal results. <a href="https://chenkangjie1123.github.io/H3Remover/promo.html">Watch the full video ↗</a></sub></p>
 
 </div>
 
@@ -70,6 +71,21 @@ python infer.py \
 Replace the example paths with your own video and mask. **White selects objects to remove; black keeps the rest.** Source and mask must have matching dimensions, frame count, and FPS. The red reference overlay is created automatically.
 
 The output is a silent **124-frame, 24 FPS, 960 × 544** MP4. Provide at least **5.17 seconds**; longer inputs use the first clip. CPU offloading and tiled decoding are enabled.
+
+<a id="gradio-demo"></a>
+
+## 🏃‍♂️ Gradio Demo
+
+After the [quickstart installation](#quickstart), launch the local editor:
+
+```bash
+python -m pip install -r requirements-demo.txt
+python demo.py
+```
+
+Open **http://127.0.0.1:7860**, load an example or upload a video and binary mask, then **Preview targets → Remove selected objects**. Previewing an uploaded mask does not need model weights. Live editing uses your local CUDA GPU and the weights from the quickstart. The **Watch a finished example** tab plays a recorded comparison without GPU inference.
+
+For automatic street masks, install the [optional models](docs/automatic-removal.md) and set `PI4_PYTHON` and `SAM31_PYTHON` to their Python executables before launching. The interface binds to localhost and does not create a public share link.
 
 ## Select people, vehicles and other moving objects in street videos
 
