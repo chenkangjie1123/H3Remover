@@ -75,7 +75,7 @@ The output is a silent **124-frame, 24 FPS, 960 × 544** MP4. Provide at least *
 
 - [Inference guide](docs/inference.md) — preview masks, use local weights, change seeds, and troubleshoot.
 - [Example videos](examples/README.md) — ready-to-run public video and mask pairs.
-- [Automatic moving-object removal](docs/automatic-removal.md) — optional Pi4 → SAM 3.1 → H3Remover integration preview.
+- [No mask yet? Generate one with Pi4 and SAM 3.1](docs/automatic-removal.md#try-the-street-example) — try the street example, inspect the target overlay, then pass the binary mask to H3Remover.
 
 ## License
 

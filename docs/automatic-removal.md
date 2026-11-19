@@ -2,7 +2,7 @@
 
 [← Overview](../README.md)
 
-**Integration preview.** The orchestration and CPU input/selection checks are implemented. End-to-end inference with the three GPU models has not yet been validated for this integration. Use the [video + mask quickstart](../README.md#quickstart) for the existing inference path.
+**Mask generation was tested on one public MOSE street clip.** Pi4 and SAM 3.1 ran sequentially on one GPU for all 124 frames. The test stopped at the binary mask; it did not run H3. Use the [video + mask quickstart](../README.md#quickstart) to edit after checking the preview.
 
 The optional workflow is:
 
@@ -43,7 +43,23 @@ python -c "import sys; print(sys.executable)"
 
 Save this path for `--sam-python`. Obtain access to [facebook/sam3.1](https://huggingface.co/facebook/sam3.1) and log in with `hf auth login`. See the [official SAM 3.1 guide](https://github.com/facebookresearch/sam3/blob/main/RELEASE_SAM3p1.md) for its checkpoint and dependency requirements. A local checkpoint can be passed with `--sam-checkpoint`.
 
-## 2. Run from a source video
+## Try the street example
+
+After installing the optional environments above, generate **only the vehicle mask**. This command does not require the H3 weights:
+
+```bash
+conda activate h3remover
+python auto_remove.py --prepare-only --prompts vehicle \
+  --video examples/street/source.mp4 --output-dir outputs/street-mask \
+  --pi4-python "$(conda run -n pi4 python -c 'import sys; print(sys.executable)')" \
+  --sam-python "$(conda run -n sam31 python -c 'import sys; print(sys.executable)')"
+```
+
+Open `outputs/street-mask/mask_preview.mp4` to see which vehicles were selected. Use `mask.mp4`, **not the overlay**, with `source.mp4` for removal.
+
+On MOSE `b0240233`, 16 vehicle track IDs passed the motion filter. Cars crossing the road and the bus entering late were selected; a partially visible car at the left border was missed at the first frame. All 16 candidate tracks passed, so this clip does not test rejection of a parked car. The GPU test used local SAM 3.1 weights (FP16 repack), RGB frame input and detector batch size 4. The standard upstream checkpoint installation above is not a bit-for-bit reproduction of that runtime.
+
+## Run removal directly
 
 Reactivate `h3remover`, then use the actual Python paths printed above:
 
