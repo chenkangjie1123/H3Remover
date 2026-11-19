@@ -18,7 +18,8 @@
   <a href="docs/inference.md">Inference Guide</a> &nbsp;·&nbsp;
   <a href="examples/README.md">Examples</a> &nbsp;·&nbsp;
   <a href="https://huggingface.co/chenkangjie1123/H3Remover">Weights</a> &nbsp;·&nbsp;
-  <a href="#license">License</a>
+  <a href="#license">License</a> &nbsp;·&nbsp;
+  <a href="#citation">Citation</a>
 </p>
 <p>
   <a href="https://chenkangjie1123.github.io/H3Remover/#demo"><img src="assets/showcase-100.gif" width="100%" alt="100 public-dataset examples: masked inputs transition to object-removal results"></a>
@@ -109,6 +110,22 @@ Open `outputs/driving/edited.mp4` for the edit. To inspect the targets first, ad
 - [Inference guide](docs/inference.md) — preview masks, use local weights, change seeds, and troubleshoot.
 - [Example videos](examples/README.md) — ready-to-run public video and mask pairs.
 - [No mask yet? Generate one with Pi4 and SAM 3.1](docs/automatic-removal.md#try-the-street-example) — try the street example, inspect the target overlay, then pass the binary mask to H3Remover.
+
+## Citation
+
+```bibtex
+@misc{chen2026h3removerreinforcingvideoobject,
+  title         = {H3Remover: Reinforcing Video Object Removal without Paired Data},
+  author        = {Kangjie Chen and Xiangyu Li and Jinhao Deng and Dongbin Zhang and
+                   Chaoda Zheng and Shijia Chen and Yuqi Zhang and Choo Sin Wai and
+                   Boyi Sun and Puyi Wang and Yu Zhang and Xianming Liu and Boyang Wang},
+  year          = {2026},
+  eprint        = {2611.24633},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  url           = {https://arxiv.org/abs/2611.24633}
+}
+```
 
 ## License
 
