@@ -71,6 +71,19 @@ Replace the example paths with your own video and mask. **White selects objects 
 
 The output is a silent **124-frame, 24 FPS, 960 × 544** MP4. Provide at least **5.17 seconds**; longer inputs use the first clip. CPU offloading and tiled decoding are enabled.
 
+## Remove moving objects from street videos
+
+Have a driving clip but no mask? [`auto_remove.py`](auto_remove.py) uses **Pi4** to estimate motion, **SAM 3.1** to track candidate objects, and **H3Remover** to remove the selected instances. After [installing Pi4 and SAM in their own environments](docs/automatic-removal.md#1-install-optional-models-separately), run:
+
+```bash
+python auto_remove.py --video driving.mp4 --output-dir outputs/driving \
+  --prompts vehicle person bicycle motorcycle \
+  --pi4-python "$(conda run -n pi4 python -c 'import sys; print(sys.executable)')" \
+  --sam-python "$(conda run -n sam31 python -c 'import sys; print(sys.executable)')"
+```
+
+Open `outputs/driving/edited.mp4` for the edit, or add **`--prepare-only`** to generate just `mask.mp4` and `mask_preview.mp4`. For driving footage, preview the selection first: vehicles moving at the camera's speed can be missed, and nearby parked cars can look as though they are moving. [How to edit using a reviewed mask →](docs/automatic-removal.md#3-inspect-the-result)
+
 ## Go Further
 
 - [Inference guide](docs/inference.md) — preview masks, use local weights, change seeds, and troubleshoot.
