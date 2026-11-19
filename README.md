@@ -7,7 +7,7 @@
 <p>
   <a href="https://chenkangjie1123.github.io/H3Remover/"><img src="docs/assets/project-badge.svg" alt="Project Page" height="36"></a>
   &nbsp;
-  <a href="https://github.com/chenkangjie1123/H3Remover/blob/main/docs/H3Remover.pdf"><img src="docs/assets/paper-badge.svg" alt="Paper" height="36"></a>
+  <a href="https://arxiv.org/abs/2611.24633"><img src="docs/assets/paper-badge.svg" alt="Paper on arXiv" height="36"></a>
   &nbsp;
   <a href="https://huggingface.co/chenkangjie1123/H3Remover"><img src="docs/assets/weights-badge.svg" alt="Model Weights" height="36"></a>
 </p>
