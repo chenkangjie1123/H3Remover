@@ -1,6 +1,6 @@
 <div align="center">
 
-<h2>H3Remover: Reinforcing Video Object Removal without Paired Data</h2>
+<h2>🎬 H3Remover: Reinforcing Video Object Removal without Paired Data</h2>
 
 <p><strong>✨ Remove Anything with H3Remover.</strong></p>
 
