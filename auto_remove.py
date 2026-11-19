@@ -10,6 +10,7 @@ import cv2
 import numpy as np
 
 from pipeline.common import sha256, write_json
+from pipeline.street_union import DIRECT_PROMPTS
 from video import read_video, save_video
 
 
@@ -66,7 +67,8 @@ def main():
     parser.add_argument('--h3-python', default=sys.executable)
     parser.add_argument('--pi4-weights', default='yyfz233/Pi4')
     parser.add_argument('--sam-checkpoint')
-    parser.add_argument('--prompts', nargs='+', default=['person', 'vehicle', 'bicycle', 'motorcycle', 'animal'])
+    parser.add_argument('--prompts', nargs='+', default=DIRECT_PROMPTS)
+    parser.add_argument('--policy', choices=['street-union', 'motion-only'], default='street-union')
     parser.add_argument('--base', type=Path, default=Path('weights/MiniMax-H3'))
     parser.add_argument('--adapter', type=Path, default=Path('weights/h3remover'))
     parser.add_argument('--gpu', type=int, default=0)
@@ -98,7 +100,7 @@ def main():
     stages = [
         ('motion', [args.pi4_python, '-m', 'pipeline.motion', '--work-dir', str(folder), '--weights', args.pi4_weights]),
         ('segment', [args.sam_python, '-m', 'pipeline.segment', '--work-dir', str(folder),
-                     '--max-objects', str(args.max_objects), '--prompts', *args.prompts]),
+                     '--max-objects', str(args.max_objects), '--policy', args.policy, '--prompts', *args.prompts]),
     ]
     if args.sam_checkpoint:
         stages[1][1].extend(['--checkpoint', str(Path(args.sam_checkpoint).resolve())])

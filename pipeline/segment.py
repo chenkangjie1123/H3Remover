@@ -5,6 +5,7 @@ from pathlib import Path
 import numpy as np
 
 from .common import collect_instances, sha256, validate_motion, write_json
+from .street_union import DIRECT_PROMPTS, motion_masks
 from video import annotate, read_video, save_video
 
 
@@ -12,7 +13,8 @@ def main():
     parser = argparse.ArgumentParser(description='Select SAM 3.1 instances using Pi4 motion evidence.')
     parser.add_argument('--work-dir', type=Path, required=True)
     parser.add_argument('--checkpoint')
-    parser.add_argument('--prompts', nargs='+', default=['person', 'vehicle', 'bicycle', 'motorcycle', 'animal'])
+    parser.add_argument('--prompts', nargs='+', default=DIRECT_PROMPTS, help='SAM categories to include regardless of motion in street-union mode.')
+    parser.add_argument('--policy', choices=['street-union', 'motion-only'], default='street-union')
     parser.add_argument('--motion-threshold', type=float, default=0.5)
     parser.add_argument('--motion-fraction', type=float, default=0.5)
     parser.add_argument('--min-motion-frames', type=int, default=2)
@@ -40,6 +42,7 @@ def main():
         max_num_objects=args.max_objects, use_fa3=False, compile=False, async_loading_frames=False)
     union = np.zeros((124, 544, 960), bool)
     evidence = {}
+    counts = []
     try:
         with torch.inference_mode(), torch.autocast('cuda', dtype=torch.bfloat16):
             for prompt in args.prompts:
@@ -51,11 +54,18 @@ def main():
                     masks, records = collect_instances(predictor, session, probability, 544, 960,
                         threshold=args.motion_threshold, fraction=args.motion_fraction,
                         min_frames=args.min_motion_frames, min_pixels=args.min_pixels,
-                        max_objects=args.max_objects)
+                        max_objects=args.max_objects, direct=args.policy=='street-union')
                     union |= masks
                     evidence[prompt] = records
                 finally:
                     predictor.handle_request(dict(type='close_session', session_id=session))
+            if args.policy == 'street-union':
+                extra, counts = motion_masks(rgb, probability, union, predictor.model.detector,
+                    args.motion_threshold, args.min_pixels,
+                    lambda i, n, a: print(f'Extra motion: frame {i+1}/124, {a}/{n} proposals accepted', flush=True) if i%12==0 else None)
+                np.savez_compressed(args.work_dir/'branches.npz', direct=np.packbits(union,axis=-1),
+                                    extra=np.packbits(extra,axis=-1), width=960)
+                union |= extra
     finally:
         predictor.shutdown()
     write_json(args.work_dir / 'selection.json', {'source_sha256': sha256(source),
@@ -63,7 +73,7 @@ def main():
         'motion_fraction': args.motion_fraction, 'min_motion_frames': args.min_motion_frames,
         'min_pixels': args.min_pixels, 'max_objects': args.max_objects,
         'instances': evidence, 'mask_pixels_per_frame': union.sum(axis=(1, 2)).tolist(),
-        'policy': 'Once selected, an instance is removed in all frames where SAM returns its mask.'})
+        'policy': args.policy, 'motion_box_attempted_accepted': counts})
     if not union.any():
         raise RuntimeError('No moving instance was selected. See selection.json; H3 inference was not started.')
     save_video(args.work_dir / 'mask.mp4', np.repeat(union[..., None], 3, axis=-1).astype(np.uint8) * 255, crf=0)

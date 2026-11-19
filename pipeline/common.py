@@ -38,7 +38,7 @@ def motion_fraction(mask, probability, threshold):
 
 
 def collect_instances(predictor, session_id, probability, height, width, *,
-                      threshold, fraction, min_frames, min_pixels, max_objects):
+                      threshold, fraction, min_frames, min_pixels, max_objects, direct=False):
     validate_motion(probability, len(probability))
     count = len(probability)
     records, packed, seen = {}, {}, set()
@@ -69,11 +69,13 @@ def collect_instances(predictor, session_id, probability, height, width, *,
         for oid, mask in zip(ids, masks):
             row = records.setdefault(int(oid), {'positive_frames': 0, 'visible_frames': 0})
             row['visible_frames'] += int(mask.any())
-            ratio = motion_fraction(mask, probability[frame], threshold)
-            row['positive_frames'] += int(mask.sum() >= min_pixels and ratio >= fraction)
+            if not direct:
+                ratio = motion_fraction(mask, probability[frame], threshold)
+                row['positive_frames'] += int(mask.sum() >= min_pixels and ratio >= fraction)
     if seen != set(range(count)):
         raise RuntimeError(f'SAM processed {len(seen)}/{count} frames. No partial mask is accepted.')
-    selected = {oid for oid, row in records.items() if row['positive_frames'] >= min_frames}
+    selected = {oid for oid, row in records.items()
+                if (row['visible_frames'] > 0 if direct else row['positive_frames'] >= min_frames)}
     union = np.zeros((count, height, width), bool)
     for frame, (ids, bits) in packed.items():
         for oid, mask in zip(ids, np.unpackbits(bits, count=width, axis=-1).astype(bool)):

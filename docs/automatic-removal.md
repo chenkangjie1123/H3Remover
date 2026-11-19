@@ -2,13 +2,18 @@
 
 [← Overview](../README.md)
 
-**Mask generation was tested on one public MOSE street clip.** Pi4 and SAM 3.1 ran sequentially on one GPU for all 124 frames. The test stopped at the binary mask; it did not run H3. Use the [video + mask quickstart](../README.md#quickstart) to edit after checking the preview.
+Use `--prepare-only` to generate the targets without loading H3. Then follow the [video + mask quickstart](../README.md#quickstart) if the overlay matches your edit.
 
 The optional workflow is:
 
 **Video → Pi4 motion probabilities → SAM 3.1 object masks → H3Remover edited video.**
 
-Pi4 supplies learned motion evidence, including scenes with a moving camera. SAM supplies complete instance contours. An instance is selected when at least half its pixels have Pi4 motion probability ≥ 0.5 in at least two frames (minimum area: 32 pixels). Once selected, all masks returned for that instance are included, including frames in which it pauses. These are configurable selection heuristics, not guarantees that every moving object is detected.
+The default policy, `street-union`, merges two masks:
+
+1. **People and vehicles:** all visible masks returned by SAM for the prompted categories are retained, without testing motion. Parked vehicles and standing pedestrians are intentional targets.
+2. **Other motion:** threshold Pi4 at 0.5. For sufficiently uncovered components (at least 32 pixels and 25% unexplained), send boxes around the remaining connected regions to SAM's image detector. A candidate must overlap its motion seed over ≥50% of its own area and ≥15% of the seed area; at least half of the candidate must be outside the direct mask. Add only newly selected pixels. This path uses no class names. It is per-frame and can miss small objects or flicker.
+
+`--policy motion-only` retains the earlier behavior: select a prompted track when enough of its mask overlaps Pi4 motion in at least two frames; keep that track wherever SAM finds it. It does not run the category-free branch.
 
 ## 1. Install optional models separately
 
@@ -45,19 +50,21 @@ Save this path for `--sam-python`. Obtain access to [facebook/sam3.1](https://hu
 
 ## Try the street example
 
-After installing the optional environments above, generate **only the vehicle mask**. This command does not require the H3 weights:
+After installing the optional environments above, generate **only the combined mask**, without the H3 weights:
 
 ```bash
 conda activate h3remover
-python auto_remove.py --prepare-only --prompts vehicle \
+python auto_remove.py --prepare-only \
   --video examples/street/source.mp4 --output-dir outputs/street-mask \
   --pi4-python "$(conda run -n pi4 python -c 'import sys; print(sys.executable)')" \
   --sam-python "$(conda run -n sam31 python -c 'import sys; print(sys.executable)')"
 ```
 
-Open `outputs/street-mask/mask_preview.mp4` to see which vehicles were selected. Use `mask.mp4`, **not the overlay**, with `source.mp4` for removal.
+Open `outputs/street-mask/mask_preview.mp4` to see the selection. Use `mask.mp4`, **not the overlay**, with `source.mp4` for removal.
 
-On MOSE `b0240233`, 16 vehicle track IDs passed the motion filter. Cars crossing the road and the bus entering late were selected; a partially visible car at the left border was missed at the first frame. All 16 candidate tracks passed, so this clip does not test rejection of a parked car. The GPU test used local SAM 3.1 weights (FP16 repack), RGB frame input and detector batch size 4. The standard upstream checkpoint installation above is not a bit-for-bit reproduction of that runtime.
+On one Waymo driving clip, the combined mask included the van ahead, a parked car and sidewalk pedestrians. Pi4 + SAM added pixels in 41 of 124 output frames, including a false positive on a roadside sign. These counts measure coverage, not detection accuracy. Preview the overlay before removal.
+
+With the earlier `--policy motion-only --prompts vehicle` setting, 16 MOSE `b0240233` vehicle track IDs passed the motion filter; one partial vehicle at the first frame was missed. The GPU checks used a local SAM 3.1 FP16 repack, RGB frame input and detector batch size 4.
 
 ## Run removal directly
 
@@ -71,7 +78,7 @@ python auto_remove.py \
   --sam-python /path/to/sam31/bin/python
 ```
 
-The default categories are person, vehicle, bicycle, motorcycle, and animal. To limit the candidate categories, add e.g. `--prompts vehicle person`. Category names generate candidates; Pi4 motion evidence decides which instances to retain. Categories outside the prompt list are not exhaustively covered.
+The default direct categories are person, vehicle, bicycle, and motorcycle. Override with `--prompts` to change which categories bypass motion filtering. This does not restrict the extra motion branch.
 
 Use `--gpu 1` to select another physical GPU. Add `--prepare-only` to stop after the mask preview, without loading H3. Use a new output directory for every preparation run; existing artifacts are never overwritten.
 
@@ -80,7 +87,8 @@ Use `--gpu 1` to select another physical GPU. Add `--prepare-only` to stop after
 | File | Contents |
 | --- | --- |
 | `source.mp4` | Shared 124-frame, 24 FPS, 960 × 544 input for all stages. |
-| `mask.mp4` | Binary union of selected moving-instance masks. |
+| `mask.mp4` | Final binary mask. |
+| `branches.npz` | Street-union only: horizontally bit-packed `direct` and `extra` masks and image `width`. Unpack with `np.unpackbits(arr, axis=-1, count=width)`. |
 | `mask_preview.mp4` | Red target overlay with white contours. |
 | `edited.mp4` | H3Remover result; omitted with `--prepare-only`. |
 | `selection.json` | Instance selection evidence and per-frame mask areas. |
