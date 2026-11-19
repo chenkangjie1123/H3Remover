@@ -1,5 +1,6 @@
 import argparse
 import json
+import shutil
 from pathlib import Path
 
 import numpy as np
@@ -19,20 +20,35 @@ PROMPT = (
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--base', required=True)
-    parser.add_argument('--adapter', required=True, type=Path)
+    parser = argparse.ArgumentParser(description='Remove mask-selected objects from a video with H3Remover.')
+    parser.add_argument('--base', default='weights/MiniMax-H3')
+    parser.add_argument('--adapter', default=Path('weights/h3remover'), type=Path)
     parser.add_argument('--video', required=True, type=Path)
     parser.add_argument('--mask', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--seed', type=int, default=20261104)
     parser.add_argument('--steps', type=int, default=50)
+    parser.add_argument('--preview-only', action='store_true', help='Validate inputs and save the mask reference without loading models.')
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(args.output)
     if args.steps < 2:
         raise ValueError('Use at least two sampling points.')
+    if not shutil.which('ffmpeg'):
+        parser.error('FFmpeg is not installed. Install it before running inference.')
+    for path in [args.video, args.mask]:
+        if not path.is_file():
+            parser.error(f'Input file not found: {path}')
+    if not args.preview_only:
+        for path in [Path(args.base) / 'modular_model_index.json', args.adapter / 'h3remover_config.json', args.adapter / 'h3remover.safetensors']:
+            if not path.is_file():
+                parser.error(f'Missing weights: {path}. Run python download_weights.py, or set --base and --adapter.')
+    print('Preparing synchronized video and target masks...', flush=True)
     source, reference = load_inputs(args.video, args.mask)
+    if args.preview_only:
+        save_video(args.output, reference)
+        print(f'Mask preview saved to {args.output}')
+        return
 
     import torch
     from diffusers import ComponentsManager, ModularPipeline
@@ -43,6 +59,7 @@ def main():
 
     if not torch.cuda.is_available():
         raise RuntimeError('A CUDA GPU is required.')
+    print('Loading H3Remover...', flush=True)
     config = json.loads((args.adapter / 'h3remover_config.json').read_text())
     if config['format_version'] != 1 or config['rank'] != 16 or config['alpha'] != 16:
         raise ValueError('Unsupported adapter configuration.')
@@ -83,6 +100,7 @@ def main():
     references = [MiniMaxH3VideoReference(frames=frames, fps=24.)
                   for frames in [source, reference]]
     try:
+        print('Removing selected objects...', flush=True)
         with torch.inference_mode():
             result = pipe(prompt=PROMPT, references=references, height=544, width=960,
                           num_frames=124, num_inference_steps=args.steps,
@@ -104,6 +122,7 @@ def main():
         if frames.shape != source.shape:
             raise ValueError('Unexpected output dimensions.')
         save_video(args.output, frames)
+        print(f'Edited video saved to {args.output}', flush=True)
     finally:
         offload.close()
 

@@ -59,12 +59,12 @@ def load_inputs(video, mask):
     return source, annotate(source, masks)
 
 
-def save_video(path, frames):
+def save_video(path, frames, crf=18):
     import subprocess
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(['ffmpeg', '-v', 'error', '-nostdin', '-n', '-f', 'rawvideo',
                     '-pix_fmt', 'rgb24', '-s', '960x544', '-r', '24', '-i', 'pipe:0',
-                    '-an', '-c:v', 'libx264', '-crf', '18', '-pix_fmt', 'yuv420p',
+                    '-an', '-c:v', 'libx264', '-crf', str(crf), '-pix_fmt', 'yuv420p',
                     '-movflags', '+faststart', '-map_metadata', '-1', str(path)],
                    input=frames.tobytes(), check=True)

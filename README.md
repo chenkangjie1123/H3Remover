@@ -1,6 +1,6 @@
 <div align="center">
 
-<h2>🎬 H3Remover: Reinforcing Video Object Removal without Paired Data</h2>
+<h2>H3Remover: Reinforcing Video Object Removal without Paired Data</h2>
 
 <p><strong>✨ Remove Anything with H3Remover.</strong></p>
 
@@ -12,8 +12,9 @@
   <a href="https://huggingface.co/chenkangjie1123/H3Remover"><img src="docs/assets/weights-badge.svg" alt="Model Weights" height="36"></a>
 </p>
 <p>
-  <a href="#overview">🔎 Overview</a> &nbsp;·&nbsp;
-  <a href="#quickstart">🚀 Quickstart</a> &nbsp;·&nbsp;
+  <a href="#overview">Overview</a> &nbsp;·&nbsp;
+  <a href="#quickstart">Quickstart</a> &nbsp;·&nbsp;
+  <a href="docs/inference.md">Inference Guide</a> &nbsp;·&nbsp;
   <a href="examples/README.md">Examples</a> &nbsp;·&nbsp;
   <a href="https://huggingface.co/chenkangjie1123/H3Remover">Weights</a> &nbsp;·&nbsp;
   <a href="#license">License</a>
@@ -21,7 +22,7 @@
 <p>
   <a href="https://chenkangjie1123.github.io/H3Remover/#demo"><img src="assets/showcase-100.gif" width="100%" alt="100 public-dataset examples: masked inputs transition to object-removal results"></a>
 </p>
-<p><sub>🌍 100 examples. Many scenes. Masked inputs → removal results. <a href="https://chenkangjie1123.github.io/H3Remover/#demo">▶ Watch the full video ↗</a></sub></p>
+<p><sub>100 examples across diverse scenes. Masked inputs → removal results. <a href="https://chenkangjie1123.github.io/H3Remover/#demo">Watch the full video ↗</a></sub></p>
 
 </div>
 
@@ -29,52 +30,52 @@
 
 **Remove objects. Preserve the scene.** H3Remover (H3 Remover) uses reinforcement learning for video object removal: removing mask-selected objects and their associated visual effects while preserving surrounding scene details, without paired training data.
 
-- 🎯 **Mask-guided editing.** Select one or multiple objects with a video mask.
-- 🪶 **Lightweight release.** A LoRA adapter and a minimal video inference pipeline.
+- **Mask-guided editing.** Select one or multiple objects with a video mask.
+- **Simple inference.** Download the adapter and base weights with one command, then run the included example.
 
 ## Quickstart
 
-### 1. 🛠️ Install
+### 1. Install
 
-Use Linux, Python 3.13, FFmpeg, and a CUDA-capable PyTorch installation. The reference environment uses PyTorch 2.10.0 with CUDA 13. Install PyTorch for your system, then:
+Use **Linux**, an **NVIDIA GPU**, and **FFmpeg**. The reference environment uses Python 3.13 and PyTorch 2.10.0 with CUDA 13:
 
 ```bash
 git clone https://github.com/chenkangjie1123/H3Remover.git
 cd H3Remover
-pip install -r requirements.txt
+conda create -n h3remover python=3.13 -y
+conda activate h3remover
+python -m pip install torch==2.10.0 torchvision==0.25.0 --index-url https://download.pytorch.org/whl/cu130
+python -m pip install -r requirements.txt
 ```
 
-### 2. 📦 Download weights
+Install FFmpeg with your system package manager. See the [inference guide](docs/inference.md) for environment checks and input details.
+
+### 2. Download weights
 
 ```bash
-hf download chenkangjie1123/H3Remover --include '*.safetensors' '*.json' --local-dir weights/h3remover
+python download_weights.py
 ```
 
-Download the full-precision **Ref2VA** base and shared components from [MiniMax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3):
+This downloads the pinned adapter and full Ref2VA base to `weights/`, verifies the adapter checksum, and reuses completed downloads. If prompted for access, accept the license on the [adapter](https://huggingface.co/chenkangjie1123/H3Remover) and [base](https://huggingface.co/MiniMaxAI/MiniMax-H3) pages, then run `hf auth login` and retry.
 
-```bash
-hf download MiniMaxAI/MiniMax-H3 --revision 0919fb684102ef115126612f3fbb84d1027e7317 \
-  --include 'modular_model_index.json' 'transformer_ref/*' 'text_encoder/*' \
-  'tokenizer/*' 'processor/*' 'vae/*' 'audio_vae/*' 'scheduler/*' 'audio_scheduler/*' \
-  --local-dir weights/MiniMax-H3
-```
-
-### 3. ✨ Remove objects
+### 3. Remove objects
 
 ```bash
 python infer.py \
-  --base weights/MiniMax-H3 \
-  --adapter weights/h3remover \
   --video examples/street/source.mp4 \
   --mask examples/street/mask.mp4 \
   --output outputs/result.mp4
 ```
 
-Use a grayscale mask: **white marks target objects; black marks non-target regions**. Source and mask must share the same timing, frame count, and dimensions. The script creates the red reference overlay automatically from the binary mask.
+Replace the example paths with your own video and mask. **White selects objects to remove; black keeps the rest.** Source and mask must have matching dimensions, frame count, and FPS. The red reference overlay is created automatically.
 
-The pipeline processes the first 5.17 seconds as 124 frames at 24 FPS, with aspect-preserving letterboxing to 960 × 544. Provide at least 5.17 seconds of synchronized video and mask. Output is a silent MP4. Use `--seed` to set the random seed and `--steps` to set the inference steps (default: 50).
+The output is a silent **124-frame, 24 FPS, 960 × 544** MP4. Provide at least **5.17 seconds**; longer inputs use the first clip. CPU offloading and tiled decoding are enabled.
 
-Component CPU offloading and tiled VAE decoding are enabled to reduce GPU memory usage.
+## Go Further
+
+- [Inference guide](docs/inference.md) — preview masks, use local weights, change seeds, and troubleshoot.
+- [Example videos](examples/README.md) — ready-to-run public video and mask pairs.
+- [Automatic moving-object removal](docs/automatic-removal.md) — optional Pi4 → SAM 3.1 → H3Remover integration preview.
 
 ## License
 
