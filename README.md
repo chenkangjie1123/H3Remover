@@ -21,10 +21,8 @@
   <a href="#license">License</a> &nbsp;·&nbsp;
   <a href="#citation">Citation</a>
 </p>
-<p>
-  <a href="https://chenkangjie1123.github.io/H3Remover/#demo"><img src="assets/showcase-100.gif" width="100%" alt="100 public-dataset examples: masked inputs transition to object-removal results"></a>
-</p>
-<p><sub>100 examples across diverse scenes. Masked inputs → removal results. <a href="https://chenkangjie1123.github.io/H3Remover/promo.html">Watch the full video ↗</a></sub></p>
+<p><a href="https://chenkangjie1123.github.io/H3Remover/#demo"><img src="assets/selected-scenes-v2.webp" width="100%" alt="City traffic and lifting a bicycle: synchronized masked inputs switch to the edited results."></a></p>
+<p><sub>Open the full comparison: <a href="https://chenkangjie1123.github.io/H3Remover/assets/videos/mose_b0240233_allvehicles.mp4">City traffic · MOSE</a> &nbsp;·&nbsp; <a href="https://chenkangjie1123.github.io/H3Remover/assets/videos/davis_bike-packing.mp4">Lifting a bicycle · DAVIS</a> &nbsp;·&nbsp; <a href="https://chenkangjie1123.github.io/H3Remover/promo.html">100-example showcase ↗</a></sub></p>
 
 </div>
 
@@ -77,7 +75,7 @@ The output is a silent **124-frame, 24 FPS, 960 × 544** MP4. Provide at least *
 
 ## 🏃‍♂️ Gradio Demo
 
-<p align="center"><img src="assets/gradio-walkthrough.gif" width="592" alt="Gradio walkthrough: load City traffic, preview the mask, run removal, then play the edited street video beside the selected targets."></p>
+<p align="center"><img src="assets/gradio-demo-v2.webp" width="100%" alt="Gradio walkthrough: load City traffic, preview the mask, run removal, then play the edited street video beside the selected targets."></p>
 
 **City traffic, end to end.** The red overlay shows what will be removed. The final frames show the result of this run; the wait for GPU inference is cut from the recording.
 
