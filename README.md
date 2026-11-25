@@ -21,8 +21,8 @@
   <a href="#license">License</a> &nbsp;·&nbsp;
   <a href="#citation">Citation</a>
 </p>
-<p><a href="https://chenkangjie1123.github.io/H3Remover/#demo"><img src="assets/selected-scenes-v2.webp" width="100%" alt="City traffic and lifting a bicycle: synchronized masked inputs switch to the edited results."></a></p>
-<p><sub>Open the full comparison: <a href="https://chenkangjie1123.github.io/H3Remover/assets/videos/mose_b0240233_allvehicles.mp4">City traffic · MOSE</a> &nbsp;·&nbsp; <a href="https://chenkangjie1123.github.io/H3Remover/assets/videos/davis_bike-packing.mp4">Lifting a bicycle · DAVIS</a> &nbsp;·&nbsp; <a href="https://chenkangjie1123.github.io/H3Remover/promo.html">100-example showcase ↗</a></sub></p>
+<p><a href="https://chenkangjie1123.github.io/H3Remover/#drive-title"><img src="assets/driving-quartet.gif" width="100%" alt="Four synchronized before-and-after wipes: downtown traffic, a passing truck, night traffic, and riders crossing an intersection."></a></p>
+<p><sub>Four street scenes, before and after removal with our driving model variant. <a href="https://chenkangjie1123.github.io/H3Remover/#drive-title">Compare all 20 driving scenes</a> · <a href="https://chenkangjie1123.github.io/H3Remover/#explore">Explore the 88-example gallery</a></sub></p>
 
 </div>
 
@@ -108,6 +108,10 @@ Open `outputs/driving/edited.mp4` for the edit. To inspect the targets first, ad
 - [Inference guide](docs/inference.md) — preview masks, use local weights, change seeds, and troubleshoot.
 - [Example videos](examples/README.md) — ready-to-run public video and mask pairs.
 - [No mask yet? Generate one with Pi4 and SAM 3.1](docs/automatic-removal.md#try-the-street-example) — try the street example, inspect the target overlay, then pass the binary mask to H3Remover.
+
+## TODO
+
+- [ ] Release the H3Remover RL training code. We train the LoRA adapters with DiffusionART while keeping the video backbone frozen.
 
 ## Citation
 
