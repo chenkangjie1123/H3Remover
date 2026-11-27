@@ -21,7 +21,7 @@
   <a href="#license">License</a> &nbsp;·&nbsp;
   <a href="#citation">Citation</a>
 </p>
-<p><a href="https://chenkangjie1123.github.io/H3Remover/#drive-title"><img src="assets/driving-quartet.gif" width="100%" alt="Four synchronized before-and-after wipes: downtown traffic, a passing truck, night traffic, and riders crossing an intersection."></a></p>
+<p><a href="https://chenkangjie1123.github.io/H3Remover/#drive-title"><img src="assets/driving-quartet-wipe.gif" width="100%" alt="Four synchronized before-and-after wipes: downtown traffic, a passing truck, night traffic, and riders crossing an intersection."></a></p>
 <p><sub>Four street scenes, before and after removal with our driving model variant. <a href="https://chenkangjie1123.github.io/H3Remover/#drive-title">Compare all 20 driving scenes</a> · <a href="https://chenkangjie1123.github.io/H3Remover/#explore">Explore the 88-example gallery</a></sub></p>
 
 </div>
