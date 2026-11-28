@@ -75,9 +75,9 @@ The output is a silent **124-frame, 24 FPS, 960 × 544** MP4. Provide at least *
 
 ## 🏃‍♂️ Gradio Demo
 
-<p align="center"><img src="assets/gradio-demo-v2.webp" width="100%" alt="Gradio walkthrough: load City traffic, preview the mask, run removal, then play the edited street video beside the selected targets."></p>
+<p align="center"><img src="assets/removal-studio.webp" width="100%" alt="The local Gradio workbench: the original street clip stays on the left as the right monitor switches from vehicle masks to the saved removal result."></p>
 
-**City traffic, end to end.** The red overlay shows what will be removed. The final frames show the result of this run; the wait for GPU inference is cut from the recording.
+**City traffic in Removal Studio.** The source stays on the left. Switch the review monitor from **Target overlay** to **Removal result** to inspect the saved edit. The walkthrough uses a prerecorded model output; **Edit a video** runs the model on your own footage.
 
 After the [quickstart installation](#quickstart), launch the local editor:
 
@@ -86,7 +86,7 @@ python -m pip install -r requirements-demo.txt
 python demo.py
 ```
 
-Open **http://127.0.0.1:7860**, load an example or upload a video and binary mask, then **Preview targets → Remove selected objects**. Previewing an uploaded mask does not need model weights. Live editing uses your local CUDA GPU and the weights from the quickstart. The **Watch a finished example** tab plays a recorded comparison without GPU inference.
+Open **http://127.0.0.1:7860**, load an example or upload a video and binary mask, then **Preview targets → Remove selected objects**. Previewing an uploaded mask does not need model weights. Live editing uses your local CUDA GPU and the weights from the quickstart. The **Example workspace** opens immediately with a saved example; switch review layers without running inference.
 
 For automatic street masks, install the [optional models](docs/automatic-removal.md) and set `PI4_PYTHON` and `SAM31_PYTHON` to their Python executables before launching. The interface binds to localhost and does not create a public share link.
 

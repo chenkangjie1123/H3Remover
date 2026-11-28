@@ -11,6 +11,21 @@ import gradio as gr
 ROOT = Path(__file__).resolve().parent
 EXAMPLES = ROOT / "examples"
 MASK, STREET = "Upload a binary mask", "Find street targets automatically"
+STUDIO = ROOT / "assets" / "studio"
+CSS = """
+.gradio-container{max-width:1184px!important;margin:auto!important;padding:24px!important}
+footer{display:none!important}
+.studio-head{display:flex;align-items:center;justify-content:space-between;color:#192029;padding:12px 0 22px;border-bottom:1px solid #d4d9df}
+.studio-head h1{font:680 29px/1.15 system-ui;margin:0;letter-spacing:-.045em}
+.studio-head small,.studio-tag{font:600 12px/1.4 system-ui;letter-spacing:.12em;text-transform:uppercase;color:#516171}
+.studio-logo{background:#223d50;color:white;padding:6px 9px;border-radius:6px;margin-right:10px;font:700 17px/1 system-ui;vertical-align:middle}
+.sheet{padding:18px 20px 14px;border-left:3px solid #31759a;background:#f0f4f7;color:#1d2a34}
+.sheet h2{font:650 22px/1.3 system-ui;letter-spacing:-.03em;margin:4px 0}.sheet p{margin:3px 0;font:15px/1.5 system-ui}
+.deck-title{font:650 14px/1.5 system-ui;color:#344857;letter-spacing:.015em;padding:2px 0}
+.studio-deck video{object-fit:contain!important;background:#131a20}
+#studio-tools{align-self:stretch;justify-content:center;padding:14px 16px;border:1px solid #d7dee4}
+.dark .studio-head,.dark .deck-title{color:#e2e8ef}.dark .sheet{background:#212c38;color:#ecf2f8}.dark .studio-tag,.dark .studio-head small{color:#a9c0cf}
+"""
 
 
 def build(work, h3_python=sys.executable):
@@ -54,7 +69,24 @@ def build(work, h3_python=sys.executable):
         return str(out)
 
     with gr.Blocks(title="H3Remover", analytics_enabled=False, delete_cache=(3600, 86400)) as app:
-        gr.Markdown("# H3Remover\nRemove objects and their visual effects from video.")
+        gr.HTML('<header class="studio-head"><h1><span class="studio-logo">H3</span>Removal Studio</h1><small>H3Remover &nbsp;/&nbsp; Video workspace</small></header>')
+        with gr.Tab("Example workspace"):
+            with gr.Row():
+                gr.HTML('<div class="sheet"><small class="studio-tag">Sample footage &nbsp;/&nbsp; MOSE</small><h2>City traffic</h2><p>Review the vehicle masks and the finished road scene.</p></div>', scale=3)
+                choices = gr.Radio(["Target overlay", "Removal result"], value="Target overlay", label="Review layer", elem_id="studio-tools", scale=2)
+            with gr.Row():
+                with gr.Column(min_width=250):
+                    gr.HTML('<div class="deck-title">Source monitor</div>')
+                    gr.Video(value=str(EXAMPLES/"street"/"source.mp4"), interactive=False, show_label=False, buttons=[], elem_classes="studio-deck", label="Original street video")
+                with gr.Column(min_width=250):
+                    monitor_title = gr.HTML('<div class="deck-title">Review monitor &nbsp;·&nbsp; Target overlay</div>')
+                    monitor = gr.Video(value=str(STUDIO/"selection.mp4"), interactive=False, show_label=False, buttons=[], elem_classes="studio-deck", label="Review monitor")
+            def review(layer):
+                result = layer == "Removal result"
+                return (str(STUDIO/("result.mp4" if result else "selection.mp4")),
+                        '<div class="deck-title">Review monitor &nbsp;·&nbsp; '+("Removal result" if result else "Target overlay")+'</div>')
+            choices.change(review, choices, [monitor, monitor_title], queue=False, show_progress="hidden")
+            gr.Markdown("Recorded example · Open **Edit a video** to run removal on your own clip.")
         with gr.Tab("Edit a video"):
             mode = gr.Radio([MASK, STREET], value=MASK, label="How would you like to select targets?")
             with gr.Row():
@@ -75,9 +107,6 @@ def build(work, h3_python=sys.executable):
                           concurrency_id="model", concurrency_limit=1, api_name="preview_targets")
             remove.click(edit, [video, mask, mode, state], result,
                          concurrency_id="model", concurrency_limit=1, api_name="remove_objects")
-        with gr.Tab("Watch a finished example"):
-            gr.Markdown("### City traffic\nRecorded model output, not a new inference. Left: selected targets. Right: H3Remover.")
-            gr.Video(value=str(ROOT/"assets"/"street-comparison.mp4"), interactive=False, label="Before and after")
     return app
 
 
@@ -89,4 +118,5 @@ if __name__ == "__main__":
     with tempfile.TemporaryDirectory(prefix="h3remover-demo-") as work:
         build(work, args.h3_python).queue(max_size=8).launch(
             server_name="127.0.0.1", server_port=args.port, share=False, max_file_size="250mb",
-            allowed_paths=[work, str(EXAMPLES), str(ROOT/"assets"/"street-comparison.mp4")])
+            theme=gr.themes.Base(primary_hue="slate", font=["system-ui", "sans-serif"]), css=CSS,
+            allowed_paths=[work, str(EXAMPLES), str(STUDIO)])
