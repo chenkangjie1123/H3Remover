@@ -10,3 +10,4 @@ outputs/
 *.safetensors
 .env
 .DS_Store
+teachers.json

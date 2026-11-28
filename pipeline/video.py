@@ -35,7 +35,7 @@ def annotate(source, masks):
     return output
 
 
-def load_inputs(video, mask):
+def load_aligned(video, mask):
     rgb, fps, count = read_video(video)
     raw_mask, mask_fps, mask_count = read_video(mask)
     if rgb.shape != raw_mask.shape or count != mask_count or abs(fps - mask_fps) > 1e-3:
@@ -56,6 +56,11 @@ def load_inputs(video, mask):
         masks[i, y:y+h, x:x+w] = cv2.resize(raw_mask[native, :, :, 0], (w, h), interpolation=cv2.INTER_NEAREST_EXACT) >= 128
     if not masks.any():
         raise ValueError('The mask contains no selected target.')
+    return source, masks, (x, y, w, h)
+
+
+def load_inputs(video, mask):
+    source, masks, _ = load_aligned(video, mask)
     return source, annotate(source, masks)
 
 

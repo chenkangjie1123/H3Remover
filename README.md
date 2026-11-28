@@ -14,6 +14,7 @@
 <p>
   <a href="#overview">Overview</a> &nbsp;·&nbsp;
   <a href="#quickstart">Quickstart</a> &nbsp;·&nbsp;
+  <a href="docs/training.md">Training</a> &nbsp;·&nbsp;
   <a href="#gradio-demo">Gradio Demo</a> &nbsp;·&nbsp;
   <a href="docs/inference.md">Inference Guide</a> &nbsp;·&nbsp;
   <a href="examples/README.md">Examples</a> &nbsp;·&nbsp;
@@ -98,9 +99,9 @@ For automatic street masks, install the [optional models](docs/automatic-removal
 | A video and a mask | [Inference guide](docs/inference.md): preview targets, use local weights, or change the sampling seed. |
 | A street video without a mask | [Automatic street removal](docs/automatic-removal.md): SAM selects people and vehicles, including parked ones; Pi4 finds other moving targets for SAM to segment. Preview the combined mask before removal. |
 
-## TODO
+## Training
 
-- [ ] Release the H3Remover RL training code. We train the LoRA adapters with DiffusionART while keeping the video backbone frozen.
+[Train the paper's Full method](docs/training.md) with your own videos and object masks. The [training code](pipeline/training/) uses DiffusionART to update a LoRA adapter on the frozen Ref2VA backbone, without paired object-free videos.
 
 ## Citation
 

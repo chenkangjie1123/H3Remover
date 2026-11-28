@@ -3,3 +3,5 @@ MiniMax H3 is licensed under the MiniMax H3 Community License Agreement, Copyrig
 H3Remover provides a modified LoRA adapter and an inference pipeline for mask-guided video object removal. Generated example outputs are AI-generated.
 
 The optional automatic-mask integration calls Pi4 (https://github.com/yyfz/Pi4) and SAM 3.1 (https://github.com/facebookresearch/sam3). Their code and weights are obtained separately and retain their upstream licenses. Pi4 code and weights are licensed under CC BY-NC 4.0.
+
+Training uses DiffusionART, Video Depth Anything, OSOR, and HPSv3. These dependencies and their model weights are obtained separately and retain their respective upstream licenses; see docs/training.md.
