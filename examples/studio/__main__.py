@@ -13,7 +13,8 @@ EXAMPLES = ROOT / "examples"
 MASK, STREET = "Upload a binary mask", "Find street targets automatically"
 STUDIO = ROOT / "assets" / "studio"
 CSS = """
-.gradio-container{max-width:1184px!important;margin:auto!important;padding:24px!important}
+.gradio-container{width:100%!important;max-width:1184px!important;margin:auto!important;padding:0!important}
+.gradio-container>.main{padding-top:12px!important}
 footer{display:none!important}
 .studio-head{display:flex;align-items:center;justify-content:space-between;color:#192029;padding:12px 0 22px;border-bottom:1px solid #d4d9df}
 .studio-head h1{font:680 29px/1.15 system-ui;margin:0;letter-spacing:-.045em}
@@ -22,10 +23,21 @@ footer{display:none!important}
 .sheet{padding:18px 20px 14px;border-left:3px solid #31759a;background:#f0f4f7;color:#1d2a34}
 .sheet h2{font:650 22px/1.3 system-ui;letter-spacing:-.03em;margin:4px 0}.sheet p{margin:3px 0;font:15px/1.5 system-ui}
 .deck-title{font:650 14px/1.5 system-ui;color:#344857;letter-spacing:.015em;padding:2px 0}
-.studio-deck video{object-fit:contain!important;background:#131a20}
+.studio-deck video{display:block;width:100%!important;height:auto!important;aspect-ratio:16/9;object-fit:contain!important;background:#131a20}
 #studio-tools{align-self:stretch;justify-content:center;padding:14px 16px;border:1px solid #d7dee4}
-.dark .studio-head,.dark .deck-title{color:#e2e8ef}.dark .sheet{background:#212c38;color:#ecf2f8}.dark .studio-tag,.dark .studio-head small{color:#a9c0cf}
+@media(max-width:640px){
+ .gradio-container>.main{padding:12px 12px 24px!important}
+ .studio-head{align-items:baseline;gap:8px;padding:4px 0 14px}
+ .studio-head h1{font-size:24px}.studio-head small{font-size:10px;text-align:right}
+}
 """
+
+
+def studio_theme():
+    theme = gr.themes.Base(primary_hue="slate", font=["system-ui", "sans-serif"])
+    # Preserve the walkthrough's light palette on either system color scheme.
+    return theme.set(**{key: getattr(theme, key[:-5]) for key in vars(theme)
+                        if key.endswith("_dark") and hasattr(theme, key[:-5])})
 
 
 def build(work, h3_python=sys.executable):
@@ -77,10 +89,10 @@ def build(work, h3_python=sys.executable):
             with gr.Row():
                 with gr.Column(min_width=250):
                     gr.HTML('<div class="deck-title">Source monitor</div>')
-                    gr.Video(value=str(EXAMPLES/"street"/"source.mp4"), interactive=False, show_label=False, buttons=[], elem_classes="studio-deck", label="Original street video")
+                    gr.Video(value=str(EXAMPLES/"street"/"source.mp4"), interactive=False, show_label=False, buttons=[], elem_id="studio-source", elem_classes="studio-deck", label="Original street video", loop=True)
                 with gr.Column(min_width=250):
                     monitor_title = gr.HTML('<div class="deck-title">Review monitor &nbsp;·&nbsp; Target overlay</div>')
-                    monitor = gr.Video(value=str(STUDIO/"selection.mp4"), interactive=False, show_label=False, buttons=[], elem_classes="studio-deck", label="Review monitor")
+                    monitor = gr.Video(value=str(STUDIO/"selection.mp4"), interactive=False, show_label=False, buttons=[], elem_id="studio-review", elem_classes="studio-deck", label="Review monitor", loop=True)
             def review(layer):
                 result = layer == "Removal result"
                 return (str(STUDIO/("result.mp4" if result else "selection.mp4")),
@@ -118,5 +130,5 @@ if __name__ == "__main__":
     with tempfile.TemporaryDirectory(prefix="h3remover-demo-") as work:
         build(work, args.h3_python).queue(max_size=8).launch(
             server_name="127.0.0.1", server_port=args.port, share=False, max_file_size="250mb",
-            theme=gr.themes.Base(primary_hue="slate", font=["system-ui", "sans-serif"]), css=CSS,
+            theme=studio_theme(), css=CSS, js=Path(__file__).with_name("playback.js").read_text(),
             allowed_paths=[work, str(EXAMPLES), str(STUDIO)])
