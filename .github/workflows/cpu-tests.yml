@@ -12,5 +12,5 @@ jobs:
           python-version: '3.13'
       - run: python -m pip install numpy opencv-python-headless huggingface_hub
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg
-      - run: python -m unittest discover -s tests -v
+      - run: python -m unittest discover -s pipeline/tests -v
       - run: python infer.py --preview-only --video examples/street/source.mp4 --mask examples/street/mask.mp4 --output /tmp/mask-preview.mp4

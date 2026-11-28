@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from pipeline import auto_remove
 import download_weights
 from pipeline.common import collect_instances, motion_fraction, validate_motion

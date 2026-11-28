@@ -82,8 +82,8 @@ The output is a silent **124-frame, 24 FPS, 960 × 544** MP4. Provide at least *
 After the [quickstart installation](#quickstart), launch the local editor:
 
 ```bash
-python -m pip install -r requirements-demo.txt
-python demo.py
+python -m pip install -r examples/studio/requirements.txt
+python examples/studio
 ```
 
 Open **http://127.0.0.1:7860**, load an example or upload a video and binary mask, then **Preview targets → Remove selected objects**. Previewing an uploaded mask does not need model weights. Live editing uses your local CUDA GPU and the weights from the quickstart. The **Example workspace** opens immediately with a saved example; switch review layers without running inference.

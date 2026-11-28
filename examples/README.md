@@ -1,5 +1,7 @@
 # Examples
 
+To try these clips interactively, launch the [Gradio Studio](studio/) from the repository root with `python examples/studio`. See the [demo setup](../README.md#gradio-demo) for installation.
+
 | Example | Source |
 | --- | --- |
 | `street` | MOSE, `b0240233`: multiple vehicles crossing an urban road |

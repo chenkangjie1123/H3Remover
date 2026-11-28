@@ -8,7 +8,7 @@ import tempfile
 
 import gradio as gr
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 EXAMPLES = ROOT / "examples"
 MASK, STREET = "Upload a binary mask", "Find street targets automatically"
 STUDIO = ROOT / "assets" / "studio"
