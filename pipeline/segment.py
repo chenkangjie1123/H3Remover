@@ -6,7 +6,7 @@ import numpy as np
 
 from .common import collect_instances, sha256, validate_motion, write_json
 from .street_union import DIRECT_PROMPTS, motion_masks
-from video import annotate, read_video, save_video
+from pipeline.video import annotate, read_video, save_video
 
 
 def main():

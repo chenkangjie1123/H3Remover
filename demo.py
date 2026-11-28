@@ -50,7 +50,7 @@ def build(work, h3_python=sys.executable):
             visible = os.getenv("CUDA_VISIBLE_DEVICES", "0").split(",")[0]
             if not visible.isdigit():
                 raise gr.Error("Set CUDA_VISIBLE_DEVICES to a numeric GPU index for automatic masks.")
-            run(["auto_remove.py", "--prepare-only", "--video", video, "--output-dir", out,
+            run(["-m", "pipeline.auto_remove", "--prepare-only", "--video", video, "--output-dir", out,
                  "--gpu", visible, "--pi4-python", pi4, "--sam-python", sam])
             src, binary, overlay = out/"source.mp4", out/"mask.mp4", out/"mask_preview.mp4"
         else:

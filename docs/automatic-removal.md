@@ -54,7 +54,7 @@ After installing the optional environments above, generate **only the combined m
 
 ```bash
 conda activate h3remover
-python auto_remove.py --prepare-only \
+python -m pipeline.auto_remove --prepare-only \
   --video examples/street/source.mp4 --output-dir outputs/street-mask \
   --pi4-python "$(conda run -n pi4 python -c 'import sys; print(sys.executable)')" \
   --sam-python "$(conda run -n sam31 python -c 'import sys; print(sys.executable)')"
@@ -72,7 +72,7 @@ Reactivate `h3remover`, then use the actual Python paths printed above:
 
 ```bash
 conda activate h3remover
-python auto_remove.py \
+python -m pipeline.auto_remove \
   --video examples/street/source.mp4 --output-dir outputs/automatic-street \
   --pi4-python /path/to/pi4/bin/python \
   --sam-python /path/to/sam31/bin/python

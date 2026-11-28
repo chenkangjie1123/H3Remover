@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
-from video import load_inputs, save_video
+from pipeline.video import load_inputs, save_video
 
 PROMPT = (
     'Edit <Video 1>, the original RGB video. <Video 2> shows the same video with '
@@ -55,7 +55,7 @@ def main():
     from diffusers.modular_pipelines.minimax_h3 import MiniMaxH3VideoReference
     from peft import LoraConfig
     from safetensors.torch import load_file
-    from offload import ComponentOffload
+    from pipeline.offload import ComponentOffload
 
     if not torch.cuda.is_available():
         raise RuntimeError('A CUDA GPU is required.')

@@ -6,7 +6,7 @@ from unittest.mock import patch
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from video import annotate, load_inputs
+from pipeline.video import annotate, load_inputs
 
 
 class VideoTests(unittest.TestCase):
@@ -24,7 +24,7 @@ class VideoTests(unittest.TestCase):
         rgb = np.full((124, 10, 20, 3), 100, np.uint8)
         mask = np.zeros_like(rgb)
         mask[:, 3:8, 5:15] = 255
-        with patch('video.read_video', side_effect=[(rgb, 24., 124), (mask, 24., 124)]):
+        with patch('pipeline.video.read_video', side_effect=[(rgb, 24., 124), (mask, 24., 124)]):
             source, reference = load_inputs('video', 'mask')
         self.assertEqual(source.shape, (124, 544, 960, 3))
         np.testing.assert_array_equal(source[:, :32], 0)
@@ -34,13 +34,13 @@ class VideoTests(unittest.TestCase):
 
     def test_reject_mismatched_clock(self):
         data = np.zeros((124, 10, 20, 3), np.uint8)
-        with patch('video.read_video', side_effect=[(data, 24., 124), (data, 25., 124)]):
+        with patch('pipeline.video.read_video', side_effect=[(data, 24., 124), (data, 25., 124)]):
             with self.assertRaises(ValueError):
                 load_inputs('video', 'mask')
 
     def test_reject_short_video(self):
         data = np.zeros((20, 10, 20, 3), np.uint8)
-        with patch('video.read_video', side_effect=[(data, 24., 20), (data, 24., 20)]):
+        with patch('pipeline.video.read_video', side_effect=[(data, 24., 20), (data, 24., 20)]):
             with self.assertRaises(ValueError):
                 load_inputs('video', 'mask')
 

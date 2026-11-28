@@ -90,24 +90,13 @@ Open **http://127.0.0.1:7860**, load an example or upload a video and binary mas
 
 For automatic street masks, install the [optional models](docs/automatic-removal.md) and set `PI4_PYTHON` and `SAM31_PYTHON` to their Python executables before launching. The interface binds to localhost and does not create a public share link.
 
-## Select people, vehicles and other moving objects in street videos
+## Examples and guides
 
-Have a driving clip but no mask? [`auto_remove.py`](auto_remove.py) builds one mask from two sources: **SAM 3.1 selects people and vehicles whether moving or parked**, and **Pi4 proposes other moving regions for SAM to segment** without a category prompt. H3Remover then edits the combined mask. After [installing Pi4 and SAM in their own environments](docs/automatic-removal.md#1-install-optional-models-separately), run:
-
-```bash
-python auto_remove.py --video driving.mp4 --output-dir outputs/driving \
-  --prompts vehicle person bicycle motorcycle \
-  --pi4-python "$(conda run -n pi4 python -c 'import sys; print(sys.executable)')" \
-  --sam-python "$(conda run -n sam31 python -c 'import sys; print(sys.executable)')"
-```
-
-Open `outputs/driving/edited.mp4` for the edit. To inspect the targets first, add **`--prepare-only`**: this writes a binary mask and a video overlay without loading H3. Check small or occluded objects before editing. To keep the previous rule (only motion-confirmed instances of the prompted classes), pass `--policy motion-only`. [Edit using a reviewed mask →](docs/automatic-removal.md#3-inspect-the-result)
-
-## Go Further
-
-- [Inference guide](docs/inference.md) — preview masks, use local weights, change seeds, and troubleshoot.
-- [Example videos](examples/README.md) — ready-to-run public video and mask pairs.
-- [No mask yet? Generate one with Pi4 and SAM 3.1](docs/automatic-removal.md#try-the-street-example) — try the street example, inspect the target overlay, then pass the binary mask to H3Remover.
+| What you have | Where to start |
+| --- | --- |
+| No footage yet | [Ready-to-run video and mask pairs](examples/README.md) |
+| A video and a mask | [Inference guide](docs/inference.md): preview targets, use local weights, or change the sampling seed. |
+| A street video without a mask | [Automatic street removal](docs/automatic-removal.md): SAM selects people and vehicles, including parked ones; Pi4 finds other moving targets for SAM to segment. Preview the combined mask before removal. |
 
 ## TODO
 

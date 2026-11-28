@@ -9,7 +9,7 @@ from unittest.mock import patch
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-import auto_remove
+from pipeline import auto_remove
 import download_weights
 from pipeline.common import collect_instances, motion_fraction, validate_motion
 
@@ -99,10 +99,10 @@ class OrchestrationTests(unittest.TestCase):
             source = Path(folder) / 'input.mp4'
             source.touch()
             output_dir = Path(folder) / 'result'
-            argv = ['auto_remove.py', '--video', str(source), '--output-dir', str(output_dir),
+            argv = ['pipeline.auto_remove', '--video', str(source), '--output-dir', str(output_dir),
                     '--pi4-python', sys.executable, '--sam-python', sys.executable, '--prepare-only']
-            with patch.object(sys, 'argv', argv), patch('auto_remove.prepare'), \
-                 patch('auto_remove.run_stage', return_value=1.5) as stage:
+            with patch.object(sys, 'argv', argv), patch('pipeline.auto_remove.prepare'), \
+                 patch('pipeline.auto_remove.run_stage', return_value=1.5) as stage:
                 auto_remove.main()
             self.assertEqual([call.args[0] for call in stage.call_args_list], ['motion', 'segment'])
             report = json.loads((output_dir / 'run.json').read_text())
@@ -114,10 +114,10 @@ class OrchestrationTests(unittest.TestCase):
             source = Path(folder) / 'input.mp4'
             source.touch()
             output_dir = Path(folder) / 'result'
-            argv = ['auto_remove.py', '--video', str(source), '--output-dir', str(output_dir),
+            argv = ['pipeline.auto_remove', '--video', str(source), '--output-dir', str(output_dir),
                     '--pi4-python', sys.executable, '--sam-python', sys.executable, '--prepare-only']
-            with patch.object(sys, 'argv', argv), patch('auto_remove.prepare'), \
-                 patch('auto_remove.run_stage', side_effect=RuntimeError('motion failure')) as stage:
+            with patch.object(sys, 'argv', argv), patch('pipeline.auto_remove.prepare'), \
+                 patch('pipeline.auto_remove.run_stage', side_effect=RuntimeError('motion failure')) as stage:
                 with self.assertRaises(RuntimeError):
                     auto_remove.main()
             self.assertEqual(stage.call_count, 1)
@@ -126,8 +126,8 @@ class OrchestrationTests(unittest.TestCase):
     def test_shared_frame_clock(self):
         rgb = np.full((160, 10, 20, 3), 80, np.uint8)
         with tempfile.TemporaryDirectory() as folder:
-            with patch('auto_remove.read_video', return_value=(rgb, 30, 160)), \
-                 patch('auto_remove.sha256', return_value='source'), patch('auto_remove.save_video') as save:
+            with patch('pipeline.auto_remove.read_video', return_value=(rgb, 30, 160)), \
+                 patch('pipeline.auto_remove.sha256', return_value='source'), patch('pipeline.auto_remove.save_video') as save:
                 auto_remove.prepare('input.mp4', Path(folder))
             meta = json.loads((Path(folder) / 'source.json').read_text())
             self.assertEqual(meta['source_frame_indices'], np.floor(np.arange(124)*30/24+.5).astype(int).tolist())

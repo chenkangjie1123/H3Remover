@@ -11,7 +11,7 @@ import numpy as np
 
 from pipeline.common import sha256, write_json
 from pipeline.street_union import DIRECT_PROMPTS
-from video import read_video, save_video
+from pipeline.video import read_video, save_video
 
 
 def prepare(source, folder):
@@ -77,7 +77,7 @@ def main():
     parser.add_argument('--steps', type=int, default=50)
     parser.add_argument('--prepare-only', action='store_true', help='Stop after saving the mask preview, before loading H3.')
     args = parser.parse_args()
-    root = Path(__file__).resolve().parent
+    root = Path(__file__).resolve().parents[1]
     folder = args.output_dir.resolve()
     if not args.video.is_file():
         parser.error('Input video does not exist.')
